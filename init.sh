@@ -22,7 +22,7 @@ echo "PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROU
 
 
 # ip forwarding
-test -z $(grep "net.ipv4.ip_forward=1" /etc/sysctl.conf) && \
+test -z "$(grep "net.ipv4.ip_forward=1" /etc/sysctl.conf)" && \
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && sysctl -p
 
 # configurate service
