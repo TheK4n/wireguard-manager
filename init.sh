@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+
 mkdir /etc/wireguard
 WG_ID=wg0
 WG_CONF=/etc/wireguard/$WG_ID.conf
