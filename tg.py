@@ -3,27 +3,11 @@ import subprocess
 import telebot
 from dotenv import load_dotenv
 from loguru import logger
-import sqlite3
+
 
 logger.add("wg_manager.log", format="{time} {level} {message}", level="DEBUG", rotation="20 MB", compression="gz")
 load_dotenv()
 bot = telebot.TeleBot(os.getenv("TOKEN"))
-conn = sqlite3.connect('clients.db')
-
-
-def create_table(connection):
-    sql = """
-    CREATE TABLE IF NOT EXISTS clients(
-        pid INT PRIMARY KEY,
-        name TEXT,
-        pub_key TEXT,
-        priv_key TEXT,
-        addr TEXT
-    )
-    """
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    connection.commit()
 
 
 def execute_add_client_sh(path: str, client_name: str):
@@ -53,7 +37,6 @@ def add_client_handler(message):
 
 
 if __name__ == "__main__":
-    create_table(conn)
     logger.info("Bot started")
     bot.infinity_polling()
     logger.info("Bot stopped")
