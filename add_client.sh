@@ -15,7 +15,7 @@ test old_peer -gt 253 && exit 1  # 24 subnet
 
 test -z "$old_peer" && new_ip=10.0.0.2 || new_ip=10.0.0.$(("$old_peer" + 1))
 
-echo -e "\n[Peer]\nPublicKey = $new_pub_key\nAllowedIPs = $new_ip/32" >> $WG_CONF
+echo -e "\n# $1\n[Peer]\nPublicKey = $new_pub_key\nAllowedIPs = $new_ip/32" >> $WG_CONF
 
 systemctl restart wg-quick@$WG_ID
 
