@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-
-WG_ID=wg0
-WG_CONF=/etc/wireguard/$WG_ID.conf
-SERVER_PUB_KEY_FILE=/etc/wireguard/publickey
-WG_PORT=51830
+test -e envvars.sh && source envvars.sh || exit 1
 
 new_priv_key=$(wg genkey)
 new_pub_key=$(echo "$new_priv_key" | wg pubkey)
@@ -24,7 +20,7 @@ echo "PrivateKey = $new_priv_key"
 echo "Address = $new_ip/32"
 echo -e "DNS = 8.8.8.8\n"
 echo "[Peer]"
-echo "PublicKey = $(cat $SERVER_PUB_KEY_FILE)"
+echo "PublicKey = $(cat $PUB_KEY_FILE)"
 echo "Endpoint = $(curl ipinfo.io/ip 2>/dev/null):$WG_PORT"
 echo "AllowedIPs = 0.0.0.0/0"
 echo "PersistentKeepalive = 20"

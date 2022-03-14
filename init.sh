@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
+test -e envvars.sh && source envvars.sh || exit 1
 
 mkdir /etc/wireguard
-WG_ID=wg0
-WG_CONF=/etc/wireguard/$WG_ID.conf
-PRIV_KEY_FILE=/etc/wireguard/privatekey
-PUB_KEY_FILE=/etc/wireguard/publickey
-WG_PORT=51830
 
 # generate server keys
 wg genkey | tee $PRIV_KEY_FILE | wg pubkey > $PUB_KEY_FILE
