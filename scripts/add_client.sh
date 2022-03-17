@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
 test -e envvars.sh && source envvars.sh || exit 1
+test -z "$1" && exit 1
 
 new_priv_key=$(wg genkey)
 new_pub_key=$(echo "$new_priv_key" | wg pubkey)
 
 # write to postgres database
-arr=($(psql -U postgres -d wg --csv -c "INSERT INTO peers(name, addr, privatekey, publickey) VALUES('$1', (SELECT max(addr) + 1 FROM peers), '$new_priv_key', '$new_pub_key')RETURNING addr, privatekey, publickey;" | head -n 2 |  tail -n +2 | tr ',' ' ' || exit 1)) 
+arr=($(psql -U postgres -d wg --csv -c "INSERT INTO peers(name, addr, privatekey, publickey) VALUES('$1', (SELECT max(addr) + 1 FROM peers), '$new_priv_key', '$new_pub_key')RETURNING addr, privatekey, publickey;" | head -n 2 |  tail -n +2 | tr ',' ' ')) 
 
-new_ip=${arr[2]}
+new_ip=${arr[0]}
 
 echo -e "\n# $1\n[Peer]\nPublicKey = $new_pub_key\nAllowedIPs = $new_ip/32" >> $WG_CONF
 
-systemctl restart wg-quick@$WG_ID
+systemctl restart wg-quick@$WG_ID || exit 1
 
 echo "[Interface]"
 echo "PrivateKey = $new_priv_key"
