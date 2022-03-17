@@ -6,8 +6,8 @@ arr=($(psql -U postgres -d wg --csv -c "select name, addr, privatekey from peers
 
 
 echo "[Interface]"
-echo "PrivateKey = ${arr[3]}"
-echo "Address = ${arr[2]}/32"
+echo "PrivateKey = ${arr[2]}"
+echo "Address = ${arr[1]}/32"
 echo -e "DNS = 8.8.8.8\n"
 echo "[Peer]"
 echo "PublicKey = $(cat $PUB_KEY_FILE)"
