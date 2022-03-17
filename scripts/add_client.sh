@@ -6,9 +6,9 @@ new_priv_key=$(wg genkey)
 new_pub_key=$(echo "$new_priv_key" | wg pubkey)
 
 # write to postgres database
-arr=($(psql -U postgres -d wg --csv -c "INSERT INTO peers(name, addr, privatekey, publickey) VALUES('$1', (SELECT max(addr) + 1 FROM peers), '$new_private_key', '$new_pub_key')RETURNING addr, privatekey, publickey;" | head -n 2 |  tail -n +2 | tr ',' ' '))
+arr=($(psql -U postgres -d wg --csv -c "INSERT INTO peers(name, addr, privatekey, publickey) VALUES('$1', (SELECT max(addr) + 1 FROM peers), '$new_private_key', '$new_pub_key')RETURNING addr, privatekey, publickey;" | head -n 2 |  tail -n +2 | tr ',' ' ')) || exit 1
 
-new_ip=arr[1]
+new_ip=${arr[1]}
 
 echo -e "\n# $1\n[Peer]\nPublicKey = $new_pub_key\nAllowedIPs = $new_ip/32" >> $WG_CONF
 
