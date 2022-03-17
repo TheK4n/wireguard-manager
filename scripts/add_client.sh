@@ -5,11 +5,10 @@ test -e envvars.sh && source envvars.sh || exit 1
 new_priv_key=$(wg genkey)
 new_pub_key=$(echo "$new_priv_key" | wg pubkey)
 
-old_peer=$(grep -A 2 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | tr '.' ' ' | awk '{printf $4"\n"}' | sort -nr | head -n 1)
+# write to postgres database
+arr=($(psql -U postgres -d wg --csv -c "INSERT INTO peers(name, addr, privatekey, publickey) VALUES('$1', (SELECT max(addr) + 1 FROM peers), '$new_private_key', '$new_pub_key')RETURNING addr, privatekey, publickey;" | head -n 2 |  tail -n +2 | tr ',' ' '))
 
-test old_peer -gt 253 && exit 1  # 24 subnet
-
-test -z "$old_peer" && new_ip=10.0.0.2 || new_ip=10.0.0.$(("$old_peer" + 1))
+new_ip=arr[1]
 
 echo -e "\n# $1\n[Peer]\nPublicKey = $new_pub_key\nAllowedIPs = $new_ip/32" >> $WG_CONF
 
