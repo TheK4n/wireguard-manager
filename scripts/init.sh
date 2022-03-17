@@ -2,6 +2,21 @@
 
 test -e envvars.sh && source envvars.sh || exit 1
 
+psql -U postgres -c 'CREATE DATABASE wg;'
+psql -U postgres -c "CREATE USER wg_admin WITH ENCRYPTED PASSWORD '1234';"
+psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE wg TO wg_admin;'
+psql -U postgres -c 'ALTER DATABASE wg OWNER TO wg_admin;'
+psql -U postgres -d wg -c 'ALTER ROLE "wg_admin" WITH LOGIN;'
+psql -U wg_admin -d wg -c "
+CREATE TABLE peers(
+    pid SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE CHECK(length(name) <= 70),
+    addr INET NOT NULL UNIQUE CHECK(addr >= INET '10.0.0.2') CHECK(addr <= INET '10.0.0.254'),
+    privatekey TEXT NOT NULL CHECK(length(privatekey) = 44),
+    publickey TEXT NOT NULL CHECK(length(privatekey) = 44),
+    reg DATE NOT NULL DEFAULT now()
+);"
+
 mkdir /etc/wireguard
 
 # generate server keys

@@ -2,6 +2,15 @@
 
 test -e envvars.sh && source envvars.sh || exit 1
 
-client_name="$1"
+arr=($(psql -U postgres -d wg --csv -c "select name, addr, privatekey from peers where name = '$1'"| head -n 2 |  tail -n +2 | tr ',' ' '))
 
-grep -A 4 -E "^#\\s$client_name\$" /etc/wireguard/wg0.conf
+
+echo "[Interface]"
+echo "PrivateKey = ${arr[3]}"
+echo "Address = ${arr[2]}/32"
+echo -e "DNS = 8.8.8.8\n"
+echo "[Peer]"
+echo "PublicKey = $(cat $PUB_KEY_FILE)"
+echo "Endpoint = $(curl ipinfo.io/ip 2>/dev/null):$WG_PORT"
+echo "AllowedIPs = 0.0.0.0/0"
+echo "PersistentKeepalive = 20"
