@@ -51,13 +51,16 @@ make tg  # initialize tg bot
 <a id="chapter-3"></a>
 ## Usage
 ```bash
-wg-manage add "client_name"  # adds client, shows qrcode
+wg-manager add "client_name"  # Adds client and shows qrcode
 ```
 ```bash
-wg-manage get "client_name"  # shows client qrcode
+wg-manager ls  # Clients list
 ```
 ```bash
-wg-manage rm "client_name"  # removes client
+wg-manager get "client_name"  # Shows client qrcode
+```
+```bash
+wg-manager rm "client_name"  # Removes client
 ```
 
 
