@@ -111,7 +111,7 @@ get_client() {
 
 get_client_qrcode_png() {
     is_exists_client_config "$1"
-    qrencode -l L -r $WG_PEERS/"$1".conf
+    qrencode -l L -o - -r $WG_PEERS/"$1".conf
 }
 
 show_client_qrcode() {

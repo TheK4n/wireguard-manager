@@ -34,10 +34,8 @@ def add_client_handler(message):
         logger.error("add_client.sh returned non-zero code")
         bot.reply_to(message, "Error")
         return
-
     photo = BytesIO(command_result.stdout)
     photo.seek(0)
-    print(photo)
     bot.send_photo(message.chat.id, photo=photo)
     logger.info(f"New client '{client_name}' was added")
 
