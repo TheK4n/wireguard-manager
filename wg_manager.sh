@@ -64,12 +64,12 @@ enable_service() {
 }
 
 restart_service() {
-    systemctl restart wg-quick@$WG_ID || bye "Check 'systemctl status wg-quick@$WG_ID.service'"
+    wg syncconf "$WG_ID" <(wg-quick strip "$WG_ID")
 }
 
 enable_ip_forwarwing() {
     test -z "$(grep "net.ipv4.ip_forward=1" /etc/sysctl.conf)" && \
-    echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && sysctl -p
+    echo -e "net.ipv4.ip_forward=1\nnet.ipv6.conf.all.forwarding = 1" >> /etc/sysctl.conf && sysctl -p
 }
 
 get_global_ipv4() {
@@ -90,7 +90,7 @@ add_client() {
 
     test $oldest_client_ip -gt 253 && bye "Only 253 peers" # 24 subnet
     test -z "$oldest_client_ip" && client_ip=$WG_SUBNET"2" || client_ip=$WG_SUBNET$(("$oldest_client_ip" + 1))
-    echo -e "\n### $1\n[Peer]\nPublicKey = $client_public_key\nPresharedKey = $client_psk\nAllowedIPs = $client_ip/32" >> $WG_CONF
+    echo -e "\n# Client $1\n[Peer]\nPublicKey = $client_public_key\nPresharedKey = $client_psk\nAllowedIPs = $client_ip/32" >> $WG_CONF
     restart_service
 
     echo "[Interface]
@@ -106,6 +106,12 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 }
 
+delete_client() {
+    is_exists_client_config "$1"
+    rm "$WG_PEERS/$1.conf"
+    sed -i "/^### $1\$/,/^$/d" "$WG_CONF"
+    restart_service
+}
 
 get_client() {
     is_exists_client_config "$1"
@@ -125,6 +131,7 @@ show_client_qrcode() {
 cmd_add_client() {
     add_client "$1" >/dev/null
     show_client_qrcode "$1"
+    echo "It also available in $WG_PEERS/$1.conf"
 }
 
 cmd_add_client_and_get_client_qrcode_png() {
@@ -149,6 +156,7 @@ case "$1" in
     init) shift;               cmd_init    "$@" ;;
     add) shift;                cmd_add_client  "$@" ;;
     get) shift;                show_client_qrcode  "$@" ;;
+    rm) shift;                 delete_client   "$@" ;;
     get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
     get_client_config) shift;  get_client "$@" ;;
     add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
