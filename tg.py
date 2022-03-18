@@ -36,7 +36,7 @@ def add_client_handler(message):
         return
 
     photo = BytesIO(command_result.stdout)
-
+    photo.seek(0)
     bot.send_photo(message.chat.id, photo=photo)
     logger.info(f"New client '{client_name}' was added")
 
@@ -62,6 +62,7 @@ def get_client_handler(message):
         return
 
     photo = BytesIO(command_result.stdout)
+    photo.seek(0)
     bot.send_photo(message.chat.id, photo=photo)
 
 
