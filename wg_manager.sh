@@ -99,7 +99,7 @@ PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 }
 
 is_exists_client_config() {
-    test -e "$1" || bye "Config '$(basename "$1")' not exists"
+    test -e "$WG_PEERS/$1.conf" || bye "Config '$(basename "$1")' not exists"
 }
 
 get_client() {
