@@ -109,7 +109,7 @@ PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 delete_client() {
     is_exists_client_config "$1"
     rm "$WG_PEERS/$1.conf"
-    sed -i "/^### $1\$/,/^$/d" "$WG_CONF"
+    sed -i "/^# Client $1\$/,/^$/d" "$WG_CONF"
     restart_service
 }
 
