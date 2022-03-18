@@ -22,13 +22,13 @@ is_root() {
     fi
 }
 
-is_exists() {
+is_exists_requirements() {
     which $1 >/dev/null || bye "'$1' not found"
 }
 
 check_requirements() {
-    is_exists "psql"
-    is_exists "wg"
+    is_exists_requirements "psql"
+    is_exists_requirements "wg"
 }
 
 check_all() {
