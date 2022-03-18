@@ -28,7 +28,7 @@ def add_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh", "", client_name)
+    command_result = execute_sh("wg_manager.sh", "add_tg", client_name)
 
     if command_result.returncode:
         logger.error("add_client.sh returned non-zero code")
