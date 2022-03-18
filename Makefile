@@ -1,24 +1,24 @@
 all: init
 
 init:
-	mkdir -p ~/.local/bin
-	PATH=$(PATH):$(HOME)/.local/bin
-	chmod +x $(PWD)/wg_manager.sh ~/.local/bin/wg-manager
+	mkdir -p $(HOME)/.local/bin
+	chmod +x $(PWD)/wg_manager.sh
+	ln -s $(PWD)/wg_manager.sh $(HOME)/.local/bin/wg-manager
 
 tg:
 	python3 -m virtualenv venv
-	pip3 install -r requirements.txt
+	$(PWD)/venv/bin/pip install -r requirements.txt
 	echo "\
-[Unit]\
-Description=wireguard\
-After=network.target\
-\
-[Service]\
-Type=simple\
-WorkingDirectory= $(PWD)\
-ExecStart=$(PWD)/venv/bin/python3 $(PWD)/tg.py\
-Restart=on-failure\
-[Install]\
+[Unit]\n\
+Description=wireguard\n\
+After=network.target\n\
+\n\
+[Service]\n\
+Type=simple\n\
+WorkingDirectory= $(PWD)\n\
+ExecStart=$(PWD)/venv/bin/python3 $(PWD)/tg.py\n\
+Restart=on-failure\n\
+[Install]\n\
 WantedBy=default.target" > /etc/systemd/system/wg_manager.service
-	systemct enable wg_manager
-	systemct start wg_manager
+	systemctl enable wg_manager
+	systemctl start wg_manager
