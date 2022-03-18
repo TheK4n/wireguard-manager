@@ -15,7 +15,7 @@ def execute_sh(path: str, command: str, client_name: str):
     return subprocess.run(["bash", path, command, client_name], capture_output=True)
 
 
-@bot.message_handler(commands=['add_client'])
+@bot.message_handler(commands=['add'])
 def add_client_handler(message):
     if message.from_user.id != int(os.getenv("ADMIN")):
         return
@@ -40,7 +40,7 @@ def add_client_handler(message):
     logger.info(f"New client '{client_name}' was added")
 
 
-@bot.message_handler(commands=['get_client'])
+@bot.message_handler(commands=['get'])
 def get_client_handler(message):
     if message.from_user.id != int(os.getenv("ADMIN")):
         return
@@ -53,7 +53,7 @@ def get_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh", "get_client_qrcode_png", client_name)
+    command_result = execute_sh("wg_manager.sh", "get_client_qrcode", client_name)
 
     if command_result.returncode:
         logger.error("get_client.sh returned non-zero code")
