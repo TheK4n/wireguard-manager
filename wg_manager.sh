@@ -78,7 +78,7 @@ get_global_ipv4() {
 
 add_client() {
     client_private_key=$(wg genkey)
-    client_public_key=$(echo "$client_private_key" | wg genkey)
+    client_public_key=$(echo "$client_private_key" | wg pubkey)
     oldest_client_ip=$(grep -A 2 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
 
     test $oldest_client_ip -gt 253 && bye "Only 253 peers" # 24 subnet
@@ -98,15 +98,22 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 }
 
+is_exists_client_config() {
+    test -e "$1" || bye "Config '$(basename "$1")' not exists"
+}
+
 get_client() {
+    is_exists_client_config "$1"
     cat $WG_PEERS/"$1".conf
 }
 
 get_client_qrcode_png() {
+    is_exists_client_config "$1"
     qrencode -l L -r $WG_PEERS/"$1".conf
 }
 
 show_client_qrcode() {
+    is_exists_client_config "$1"
     qrencode -t ansiutf8 -l L -r $WG_PEERS/"$1".conf
 }
 
