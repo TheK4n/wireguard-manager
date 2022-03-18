@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 test -e env.sh && source env.sh || exit 1
+which curl >/dev/null || exit 1
+which psql >/dev/null || exit 1
 
 psql -U postgres -c "CREATE DATABASE $PG_DATABASE;"
 psql -U postgres -c "CREATE USER $PG_USER WITH ENCRYPTED PASSWORD '$PG_PASS';"
@@ -14,7 +16,8 @@ CREATE TABLE peers(
     addr INET NOT NULL UNIQUE CHECK(addr >= INET '10.0.0.2') CHECK(addr <= INET '10.0.0.254'),
     privatekey TEXT NOT NULL CHECK(length(privatekey) = 44),
     publickey TEXT NOT NULL CHECK(length(privatekey) = 44),
-    reg DATE NOT NULL DEFAULT now()
+    reg DATE NOT NULL DEFAULT now(),
+    is_active BOOLEAN NOT NULL DEFAULT true
 );"
 
 mkdir $WG_PREFIX
