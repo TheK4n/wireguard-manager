@@ -127,6 +127,7 @@ case "$1" in
     add) shift;                add_client  "$@" ;;
     get) shift;                show_client_qrcode  "$@" ;;
     get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
+    get_client_config) shift;  get_client "$@" ;;
     *)                         bye "Need command" ;;
 esac
 exit 0
