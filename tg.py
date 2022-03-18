@@ -28,7 +28,7 @@ def add_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh", "add", client_name)
+    command_result = execute_sh("wg_manager.sh", "", client_name)
 
     if command_result.returncode:
         logger.error("add_client.sh returned non-zero code")
@@ -37,7 +37,7 @@ def add_client_handler(message):
 
     photo = BytesIO(command_result.stdout)
 
-    bot.send_photo(message, photo=photo)
+    bot.send_photo(message.chat.id, photo=photo)
     logger.info(f"New client '{client_name}' was added")
 
 
@@ -62,7 +62,7 @@ def get_client_handler(message):
         return
 
     photo = BytesIO(command_result.stdout)
-    bot.send_photo(message, photo=photo)
+    bot.send_photo(message.chat.id, photo=photo)
 
 
 if __name__ == "__main__":
