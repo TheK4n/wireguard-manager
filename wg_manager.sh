@@ -87,15 +87,15 @@ add_client() {
     restart_service
 
     echo "[Interface]
-    PrivateKey = $client_private_key
-    Address = $client_ip/32
-    DNS = $CLIENT_DNSs
+PrivateKey = $client_private_key
+Address = $client_ip/32
+DNS = $CLIENT_DNSs
 
-    [Peer]
-    PublicKey = $SERVER_PUBLIC_KEY
-    Endpoint = $(get_global_ipv4):$WG_PORT
-    AllowedIPs = 0.0.0.0/0
-    PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
+[Peer]
+PublicKey = $SERVER_PUBLIC_KEY
+Endpoint = $(get_global_ipv4):$WG_PORT
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 }
 
 get_client() {
@@ -121,7 +121,7 @@ cmd_init() {
     add_client "Initial" >/dev/null
 }
 
-
+source $WG_PARAMS
 case "$1" in
     init) shift;               cmd_init    "$@" ;;
     add) shift;                add_client  "$@" ;;
