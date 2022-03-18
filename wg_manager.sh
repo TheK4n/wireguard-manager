@@ -110,6 +110,11 @@ show_client_qrcode() {
     qrencode -t ansiutf8 -l L -r $WG_PEERS/"$1".conf
 }
 
+cmd_add_client() {
+    add_client "$1" >/dev/null
+    show_client_qrcode
+}
+
 cmd_init() {
     mkdir -p $WG_PEERS
     chmod 600 -R $WG_PREFIX
@@ -124,7 +129,7 @@ cmd_init() {
 source $WG_PARAMS
 case "$1" in
     init) shift;               cmd_init    "$@" ;;
-    add) shift;                add_client  "$@" ;;
+    add) shift;                cmd_add_client  "$@" ;;
     get) shift;                show_client_qrcode  "$@" ;;
     get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
     get_client_config) shift;  get_client "$@" ;;
