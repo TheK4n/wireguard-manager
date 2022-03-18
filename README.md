@@ -43,13 +43,22 @@ Clone repository and installing dependencies:
 ```bash
 git clone https://github.com/TheK4n/wireguard-manager.git
 cd wireguard-manager
-pip3 install -r requirements.txt
-chmod +x wg_manager.sh
-./wg_manager.sh init
+make init
+wg-manager init
+make tg  # initialize tg bot
 ```
 
 <a id="chapter-3"></a>
 ## Usage
+```bash
+wg-manage add "client_name"  # adds client, shows qrcode
+```
+```bash
+wg-manage get "client_name"  # shows client qrcode
+```
+```bash
+wg-manage rm "client_name"  # removes client
+```
 
 
 
