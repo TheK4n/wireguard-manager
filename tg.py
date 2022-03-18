@@ -22,7 +22,7 @@ def add_client_handler(message):
 
     message_args = message.text.split(" ")
     if len(message_args) < 2:
-        bot.reply_to(message, "Client name was not defined, use '/add_client <client_name>'")
+        bot.reply_to(message, "Client name was not defined, use '/add <client_name>'")
         return
 
     bot.reply_to(message, "Please wait!")
@@ -31,7 +31,7 @@ def add_client_handler(message):
     command_result = execute_sh("wg_manager.sh", "add_tg", client_name)
 
     if command_result.returncode:
-        logger.error("add_client.sh returned non-zero code")
+        logger.error("Shell returned non-zero code")
         bot.reply_to(message, "Error")
         return
     photo = BytesIO(command_result.stdout)
@@ -47,7 +47,7 @@ def get_client_handler(message):
 
     message_args = message.text.split(" ")
     if len(message_args) < 2:
-        bot.reply_to(message, "Client name was not defined, use '/get_client <client_name>'")
+        bot.reply_to(message, "Client name was not defined, use '/get <client_name>'")
         return
 
     bot.reply_to(message, "Please wait!")
@@ -56,7 +56,7 @@ def get_client_handler(message):
     command_result = execute_sh("wg_manager.sh", "get_client_qrcode", client_name)
 
     if command_result.returncode:
-        logger.error("get_client.sh returned non-zero code")
+        logger.error("Shell returned non-zero code")
         bot.reply_to(message, "Error")
         return
 
