@@ -118,6 +118,10 @@ get_client() {
     cat $WG_PEERS/"$1".conf
 }
 
+get_clients_names() {
+    grep "# Client" $WG_CONF | awk '{print NR".", $3}'
+}
+
 get_client_qrcode_png() {
     is_exists_client_config "$1"
     qrencode -l L -o - -r $WG_PEERS/"$1".conf
