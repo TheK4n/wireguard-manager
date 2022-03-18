@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-test -e envvars.sh && source envvars.sh || exit 1
+test -e env.sh && source env.sh || exit 1
+test -z "$1" && exit 1
 
 arr=($(psql -U postgres -d wg --csv -c "select name, addr, privatekey from peers where name = '$1'"| head -n 2 |  tail -n +2 | tr ',' ' '))
+
+test -z ${arr[2]} && exit 1
 
 
 echo "[Interface]"

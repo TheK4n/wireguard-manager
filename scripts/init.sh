@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-test -e envvars.sh && source envvars.sh || exit 1
+test -e env.sh && source env.sh || exit 1
 
 psql -U postgres -c 'CREATE DATABASE wg;'
 psql -U postgres -c "CREATE USER wg_admin WITH ENCRYPTED PASSWORD '1234';"
