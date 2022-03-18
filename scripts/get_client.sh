@@ -3,7 +3,7 @@
 test -e env.sh && source env.sh || exit 1
 test -z "$1" && exit 1
 
-arr=($(psql -U postgres -d wg --csv -c "select name, addr, privatekey from peers where name = '$1'"| head -n 2 |  tail -n +2 | tr ',' ' '))
+arr=($(psql -U $PG_USER -d $PG_DATABASE --csv -c "select name, addr, privatekey from peers where name = '$1'"| head -n 2 |  tail -n +2 | tr ',' ' '))
 
 test -z ${arr[2]} && exit 1
 
