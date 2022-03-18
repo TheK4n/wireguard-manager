@@ -65,6 +65,21 @@ def get_client_handler(message):
     bot.send_photo(message.chat.id, photo=photo)
 
 
+@bot.message_handler(commands=['ls'])
+def ls_client_handler(message):
+    if message.from_user.id != int(os.getenv("ADMIN")):
+        return
+
+    command_result = execute_sh("wg_manager.sh", "ls", "")
+
+    if command_result.returncode:
+        logger.error("Shell returned non-zero code")
+        bot.reply_to(message, "Error")
+        return
+
+    bot.reply_to(message, command_result.stdout.decode())
+
+
 if __name__ == "__main__":
     logger.info("Bot started")
     bot.infinity_polling()

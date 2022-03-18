@@ -163,6 +163,7 @@ case "$1" in
     rm) shift;                 delete_client   "$@" ;;
     get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
     get_client_config) shift;  get_client "$@" ;;
+    ls) shift;                 get_clients_names "$@" ;;
     add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
     *)                         bye "Need command" ;;
 esac
