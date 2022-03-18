@@ -27,14 +27,14 @@ def add_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("scripts/add_client.sh", client_name)
+    command_result = execute_sh("wg_manager.sh add", client_name)
 
     if command_result.returncode:
         logger.error("add_client.sh returned non-zero code")
         bot.reply_to(message, "Error")
         return
 
-    bot.reply_to(message, command_result.stdout.decode())
+    bot.send_photo(message, photo=command_result.stdout)
     logger.info(f"New client '{client_name}' was added")
 
 
@@ -51,14 +51,14 @@ def get_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("scripts/get_client.sh", client_name)
+    command_result = execute_sh("wg_manager.sh get_client_qrcode", client_name)
 
     if command_result.returncode:
         logger.error("get_client.sh returned non-zero code")
         bot.reply_to(message, "Error")
         return
 
-    bot.reply_to(message, command_result.stdout.decode())
+    bot.send_photo(message, photo=command_result.stdout)
 
 
 if __name__ == "__main__":

@@ -124,6 +124,11 @@ cmd_add_client() {
     show_client_qrcode "$1"
 }
 
+cmd_add_client_and_get_client_qrcode_png() {
+    add_client "$1" >/dev/null
+    get_client_qrcode_png "$1"
+}
+
 cmd_init() {
     check_all
     mkdir -p $WG_PEERS
@@ -143,6 +148,7 @@ case "$1" in
     get) shift;                show_client_qrcode  "$@" ;;
     get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
     get_client_config) shift;  get_client "$@" ;;
+    add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
     *)                         bye "Need command" ;;
 esac
 exit 0
