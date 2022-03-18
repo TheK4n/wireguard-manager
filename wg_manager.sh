@@ -7,6 +7,7 @@ WG_PARAMS=$WG_PREFIX/params
 WG_PEERS=$WG_PREFIX/peers
 WG_SUBNET=10.0.0.
 WG_ADDR="$WG_SUBNET"1
+WG_PORT=51830
 CLIENT_DNSs=208.67.222.222,208.67.220.220
 
 
@@ -38,7 +39,6 @@ check_all() {
 write_params() {
     source .env || bye "'.env' not found"
 
-    echo "WG_PORT=$WG_PORT" > "$WG_PARAMS"
     echo "SERVER_PRIVATE_KEY=$SERVER_PRIVATE_KEY" >> "$WG_PARAMS"
     echo "SERVER_PUBLIC_KEY=$SERVER_PRIVATE_KEY" >> "$WG_PARAMS"
 }
@@ -76,7 +76,12 @@ get_global_ipv4() {
     ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1
 }
 
+is_exists_client_config() {
+    test -e "$WG_PEERS/$1.conf" || bye "Config '$(basename "$1")' not exists"
+}
+
 add_client() {
+    test -e "$WG_PEERS/$1.conf" && bye "Peer '$1' already exists"
     client_private_key=$(wg genkey)
     client_public_key=$(echo "$client_private_key" | wg pubkey)
     oldest_client_ip=$(grep -A 2 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
@@ -98,9 +103,6 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 20" | tee $WG_PEERS/"$1".conf
 }
 
-is_exists_client_config() {
-    test -e "$WG_PEERS/$1.conf" || bye "Config '$(basename "$1")' not exists"
-}
 
 get_client() {
     is_exists_client_config "$1"
@@ -123,6 +125,7 @@ cmd_add_client() {
 }
 
 cmd_init() {
+    check_all
     mkdir -p $WG_PEERS
     chmod 600 -R $WG_PREFIX
     generate_server_keys

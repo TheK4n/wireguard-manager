@@ -28,8 +28,6 @@ Wireguard manager with Telegram integration
 ## Requirements
 
 * **wg**  - Wireguard CLI
-* **psql >= 13.6** - PostgreSQL
-* **curl**
 * **qrencode** - Generate qrcode
 <a id="chapter-2"></a>
 ## Installation
@@ -38,12 +36,6 @@ Wireguard manager with Telegram integration
 ```bash
 TOKEN=123456789:ABCDEFG  # tg bot token
 ADMIN=123456789  # your tg id
-WG_PORT=51830
-PG_HOST=127.0.0.1
-PG_DB=wg
-PG_USER=wg_admin
-PG_PASS=1234
-PG_PORT=5432
 ```
 
 Clone repository and installing dependencies:
@@ -52,7 +44,8 @@ Clone repository and installing dependencies:
 git clone https://github.com/TheK4n/wireguard-manager.git
 cd wireguard-manager
 pip3 install -r requirements.txt
-bash scripts/init.sh  # initialize wireguard
+chmod +x wg_manager.sh
+./wg_manager.sh init
 ```
 
 <a id="chapter-3"></a>
