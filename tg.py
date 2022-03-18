@@ -10,8 +10,8 @@ load_dotenv()
 bot = telebot.TeleBot(os.getenv("TOKEN"))
 
 
-def execute_sh(path: str, client_name: str):
-    return subprocess.run(["bash", path, client_name], capture_output=True)
+def execute_sh(path: str, command: str, client_name: str):
+    return subprocess.run(["bash", path, command, client_name], capture_output=True)
 
 
 @bot.message_handler(commands=['add_client'])
@@ -27,7 +27,7 @@ def add_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh add", client_name)
+    command_result = execute_sh("wg_manager.sh", "add", client_name)
     print(command_result)
 
     if command_result.returncode:
@@ -52,7 +52,7 @@ def get_client_handler(message):
     bot.reply_to(message, "Please wait!")
 
     client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh get_client_qrcode", client_name)
+    command_result = execute_sh("wg_manager.sh", "get_client_qrcode_png", client_name)
     print(command_result)
 
     if command_result.returncode:
