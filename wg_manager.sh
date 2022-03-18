@@ -103,11 +103,11 @@ get_client() {
 }
 
 get_client_qrcode_png() {
-    qrencode -l L $WG_PEERS/"$1".conf
+    qrencode -l L -r $WG_PEERS/"$1".conf
 }
 
 show_client_qrcode() {
-    qrencode -t ansiutf8 -l L $WG_PEERS/"$1".conf
+    qrencode -t ansiutf8 -l L -r $WG_PEERS/"$1".conf
 }
 
 cmd_init() {
