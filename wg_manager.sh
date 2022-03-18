@@ -112,7 +112,7 @@ show_client_qrcode() {
 
 cmd_add_client() {
     add_client "$1" >/dev/null
-    show_client_qrcode
+    show_client_qrcode "$1"
 }
 
 cmd_init() {
