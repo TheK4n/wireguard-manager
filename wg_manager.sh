@@ -23,7 +23,7 @@ is_root() {
 }
 
 is_exists_requirements() {
-    which $1 >/dev/null || bye "'$1' not found"
+    which "$1" >/dev/null || bye "'$1' not found"
 }
 
 check_requirements() {
@@ -88,7 +88,7 @@ add_client() {
     oldest_client_ip=$(grep -A 3 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
 
 
-    test $oldest_client_ip -gt 253 && bye "Only 253 peers" # 24 subnet
+    test "$oldest_client_ip" -gt 253 && bye "Only 253 peers" # 24 subnet
     test -z "$oldest_client_ip" && client_ip=$WG_SUBNET"2" || client_ip=$WG_SUBNET$(("$oldest_client_ip" + 1))
     echo -e "\n# Client $1\n[Peer]\nPublicKey = $client_public_key\nPresharedKey = $client_psk\nAllowedIPs = $client_ip/32" >> $WG_CONF
     restart_service
