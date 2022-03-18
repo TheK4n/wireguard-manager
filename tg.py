@@ -28,6 +28,7 @@ def add_client_handler(message):
 
     client_name = message_args[1]
     command_result = execute_sh("wg_manager.sh add", client_name)
+    print(command_result)
 
     if command_result.returncode:
         logger.error("add_client.sh returned non-zero code")
@@ -52,6 +53,7 @@ def get_client_handler(message):
 
     client_name = message_args[1]
     command_result = execute_sh("wg_manager.sh get_client_qrcode", client_name)
+    print(command_result)
 
     if command_result.returncode:
         logger.error("get_client.sh returned non-zero code")
