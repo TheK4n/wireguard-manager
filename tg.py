@@ -80,6 +80,29 @@ def ls_client_handler(message):
     bot.reply_to(message, command_result.stdout.decode())
 
 
+@bot.message_handler(commands=['rm'])
+def get_client_handler(message):
+    if message.from_user.id != int(os.getenv("ADMIN")):
+        return
+
+    message_args = message.text.split(" ")
+    if len(message_args) < 2:
+        bot.reply_to(message, "Client name was not defined, use '/rm <client_name>'")
+        return
+
+    bot.reply_to(message, "Please wait!")
+
+    client_name = message_args[1]
+    command_result = execute_sh("wg_manager.sh", "rm", client_name)
+
+    if command_result.returncode:
+        logger.error("Shell returned non-zero code")
+        bot.reply_to(message, "Error")
+        return
+
+    bot.reply_to(message, f"Client '{client_name}' was removed")
+
+
 if __name__ == "__main__":
     logger.info("Bot started")
     bot.infinity_polling()
