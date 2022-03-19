@@ -5,9 +5,11 @@ WG_PREFIX=/etc/wireguard
 WG_CONF=$WG_PREFIX/$WG_ID.conf
 WG_PARAMS=$WG_PREFIX/params
 WG_PEERS=$WG_PREFIX/peers
+
 WG_SUBNET=10.0.0.
 WG_ADDR="$WG_SUBNET"1
 WG_PORT=51830
+
 CLIENT_DNSs=208.67.222.222,208.67.220.220
 
 
@@ -37,8 +39,6 @@ check_all() {
 }
 
 write_params() {
-    source .env || bye "'.env' not found"
-
     echo "SERVER_PRIVATE_KEY=$SERVER_PRIVATE_KEY" >> "$WG_PARAMS"
     echo "SERVER_PUBLIC_KEY=$SERVER_PUBLIC_KEY" >> "$WG_PARAMS"
 }
@@ -152,7 +152,7 @@ cmd_init() {
     create_config_file
     enable_ip_forwarwing
     enable_service
-    add_client "Initial" >/dev/null
+    add_client "initial" >/dev/null
 }
 
 test -e && source $WG_PARAMS
