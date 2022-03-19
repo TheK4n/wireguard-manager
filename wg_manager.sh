@@ -12,7 +12,7 @@ CLIENT_DNSs=208.67.222.222,208.67.220.220
 
 
 bye() {
-    echo "$0: error: $1"
+    echo "$0: Error: $1"
     exit 1
 }
 
@@ -27,8 +27,8 @@ is_exists_requirements() {
 }
 
 check_requirements() {
-    is_exists_requirements "psql"
     is_exists_requirements "wg"
+    is_exists_requirements "qrencode"
 }
 
 check_all() {
@@ -40,7 +40,7 @@ write_params() {
     source .env || bye "'.env' not found"
 
     echo "SERVER_PRIVATE_KEY=$SERVER_PRIVATE_KEY" >> "$WG_PARAMS"
-    echo "SERVER_PUBLIC_KEY=$SERVER_PRIVATE_KEY" >> "$WG_PARAMS"
+    echo "SERVER_PUBLIC_KEY=$SERVER_PUBLIC_KEY" >> "$WG_PARAMS"
 }
 
 generate_server_keys() {
@@ -155,7 +155,7 @@ cmd_init() {
     add_client "Initial" >/dev/null
 }
 
-source $WG_PARAMS
+test -e && source $WG_PARAMS
 case "$1" in
     init) shift;               cmd_init    "$@" ;;
     add) shift;                cmd_add_client  "$@" ;;
