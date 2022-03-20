@@ -76,8 +76,8 @@ def get_client_handler(message):
     if not check_admin(message.from_user.id):
         return
 
-    if check_args(message.text):
-        bot.reply_to(message, "Client name was not defined, use '/rm <client_name>'")
+    if not check_args(message.text):
+        bot.reply_to(message, "Client name was not defined")
         return
 
     first_message = bot.reply_to(message, "Please wait!")
