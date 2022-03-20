@@ -20,7 +20,7 @@ def check_admin(message_from_user_id) -> bool:
 
 
 def check_args(message_text) -> bool:
-    return message_text.split(" ") > 1
+    return len(message_text.split(" ")) > 1
 
 
 def base_handler(message, command: str):
@@ -41,8 +41,8 @@ def base_handler(message, command: str):
         return
     photo = BytesIO(command_result.stdout)
     photo.seek(0)
-    bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
     bot.send_photo(message.chat.id, photo=photo)
+    bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
     logger.info(f"command '{command}' executed")
 
 
@@ -80,7 +80,7 @@ def get_client_handler(message):
         bot.reply_to(message, "Client name was not defined, use '/rm <client_name>'")
         return
 
-    bot.reply_to(message, "Please wait!")
+    first_message = bot.reply_to(message, "Please wait!")
 
     client_name = message.text.split()[1]
     command_result = execute_sh("wg_manager.sh", "rm", client_name)
@@ -91,6 +91,7 @@ def get_client_handler(message):
         return
 
     bot.reply_to(message, f"Client '{client_name}' was removed")
+    bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
 
 
 if __name__ == "__main__":
