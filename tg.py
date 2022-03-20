@@ -15,59 +15,50 @@ def execute_sh(path: str, command: str, client_name: str):
     return subprocess.run(["bash", path, command, client_name], capture_output=True)
 
 
-@bot.message_handler(commands=['add'])
-def add_client_handler(message):
-    if message.from_user.id != int(os.getenv("ADMIN")):
+def check_admin(message_from_user_id) -> bool:
+    return message_from_user_id == int(os.getenv("ADMIN"))
+
+
+def check_args(message_text) -> bool:
+    return message_text.split(" ") > 1
+
+
+def base_handler(message, command: str):
+    if not check_admin(message.from_user.id):
+        return
+    if not check_args(message.text):
+        bot.reply_to(message, "Client name was not defined")
         return
 
-    message_args = message.text.split(" ")
-    if len(message_args) < 2:
-        bot.reply_to(message, "Client name was not defined, use '/add <client_name>'")
-        return
+    first_message = bot.reply_to(message, "Please wait!")
 
-    bot.reply_to(message, "Please wait!")
-
-    client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh", "add_tg", client_name)
+    client_name = message.text.split()[1]
+    command_result = execute_sh("wg_manager.sh", command, client_name)
 
     if command_result.returncode:
-        logger.error("Shell returned non-zero code")
-        bot.reply_to(message, "Error")
+        logger.error(f"Shell returned non-zero code, {command_result.stderr.decode()}")
+        bot.edit_message_text(chat_id=first_message.chat.id, message_id=first_message.message_id, text="Error!")
         return
     photo = BytesIO(command_result.stdout)
     photo.seek(0)
+    bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
     bot.send_photo(message.chat.id, photo=photo)
-    logger.info(f"New client '{client_name}' was added")
+    logger.info(f"command '{command}' executed")
+
+
+@bot.message_handler(commands=['add'])
+def add_client_handler(message):
+    base_handler(message, "add_tg")
 
 
 @bot.message_handler(commands=['get'])
 def get_client_handler(message):
-    if message.from_user.id != int(os.getenv("ADMIN")):
-        return
-
-    message_args = message.text.split(" ")
-    if len(message_args) < 2:
-        bot.reply_to(message, "Client name was not defined, use '/get <client_name>'")
-        return
-
-    bot.reply_to(message, "Please wait!")
-
-    client_name = message_args[1]
-    command_result = execute_sh("wg_manager.sh", "get_client_qrcode", client_name)
-
-    if command_result.returncode:
-        logger.error("Shell returned non-zero code")
-        bot.reply_to(message, "Error")
-        return
-
-    photo = BytesIO(command_result.stdout)
-    photo.seek(0)
-    bot.send_photo(message.chat.id, photo=photo)
+    base_handler(message, "get_client_qrcode")
 
 
 @bot.message_handler(commands=['ls'])
 def ls_client_handler(message):
-    if message.from_user.id != int(os.getenv("ADMIN")):
+    if not check_admin(message.from_user.id):
         return
 
     command_result = execute_sh("wg_manager.sh", "ls", "")
@@ -82,17 +73,16 @@ def ls_client_handler(message):
 
 @bot.message_handler(commands=['rm'])
 def get_client_handler(message):
-    if message.from_user.id != int(os.getenv("ADMIN")):
+    if not check_admin(message.from_user.id):
         return
 
-    message_args = message.text.split(" ")
-    if len(message_args) < 2:
+    if check_args(message.text):
         bot.reply_to(message, "Client name was not defined, use '/rm <client_name>'")
         return
 
     bot.reply_to(message, "Please wait!")
 
-    client_name = message_args[1]
+    client_name = message.text.split()[1]
     command_result = execute_sh("wg_manager.sh", "rm", client_name)
 
     if command_result.returncode:
