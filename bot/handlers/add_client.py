@@ -29,4 +29,5 @@ async def get_client_2(message: Message, state: FSMContext):
     photo = put_bytes_to_file(add_client(client_name))
     await message.answer(f"Client \"{client_name}\" was added, here his QR code")
     await message.answer_photo(photo=photo)
+    await message.answer("Menu", reply_markup=menu)
     await state.finish()
