@@ -26,7 +26,7 @@ async def get_client(call: CallbackQuery, state: FSMContext):
     choice.insert(cancel)
 
     await call.message.edit_text('Clients', reply_markup=choice)
-
+    await call.answer()
     await GetClient.name.set()
 
 
