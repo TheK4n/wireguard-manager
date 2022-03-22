@@ -52,6 +52,7 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
     )
 
     await call.message.edit_text(f'Client "{client_name}"', reply_markup=get_client_menu)
+    await call.answer()
 
     await GetClient.next()
 
@@ -64,15 +65,19 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         photo = put_bytes_to_file(get_config_qrcode(client_name))
         photo.name = client_name + ".png"
         await call.message.answer_photo(photo=photo)
+        await call.answer()
     elif command == "get_file":
         document = put_bytes_to_file(get_config_raw(client_name))
         document.name = client_name + ".conf"
         await call.message.answer_document(document=document)
+        await call.answer()
     elif command == "get_raw":
         await call.message.answer(get_config_raw(client_name).decode())
+        await call.answer()
     elif command == "delete":
         if not delete_client(client_name).returncode:
             await call.message.answer("Client deleted", reply_markup=menu)
+            await call.answer()
             await call.message.delete()
             await state.finish()
 

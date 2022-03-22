@@ -19,4 +19,4 @@ async def bot_start(message: types.Message):
 
 @dp.message_handler(Command("menu"), user_id=ADMINS)
 async def bot_start(message: types.Message):
-    await message.answer("Menu", reply_markup=menu)
+    await message.answer("WireGuard Manager bot menu", reply_markup=menu)
