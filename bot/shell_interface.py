@@ -30,8 +30,7 @@ def delete_client(client_name: str):
     return execute_command("rm", client_name)
 
 
-def put_bytes_to_file(file: bytes, client_name: str) -> BytesIO:
+def put_bytes_to_file(file: bytes) -> BytesIO:
     bytes_file = BytesIO(file)
     bytes_file.seek(0)
-    bytes_file.name = f"{client_name}.conf"
     return bytes_file

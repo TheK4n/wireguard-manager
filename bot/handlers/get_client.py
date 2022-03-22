@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaDocument
 
 from keyboards import cancel, menu
 from loader import dp
@@ -59,9 +59,13 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
     command, client_name = call.data.split(":")
 
     if command == "get_qrcode":
-        await call.message.answer_photo(put_bytes_to_file(get_config_qrcode(client_name), client_name))
+        photo = put_bytes_to_file(get_config_qrcode(client_name))
+        photo.name = client_name + ".png"
+        await call.message.answer_photo(photo=InputMediaPhoto(photo))
     elif command == "get_file":
-        await call.message.answer_document(put_bytes_to_file(get_config_raw(client_name), client_name))
+        document = put_bytes_to_file(get_config_raw(client_name))
+        document.name = client_name + ".conf"
+        await call.message.answer_document(document=InputMediaDocument(document))
     elif command == "get_raw":
         await call.message.answer(get_config_raw(client_name).decode())
     elif command == "delete":
