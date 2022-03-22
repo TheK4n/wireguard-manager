@@ -77,7 +77,7 @@ get_global_ipv4() {
 }
 
 is_exists_client_config() {
-    test -e "$WG_PEERS/$1.conf" || bye "Config '$(basename "$1")' not exists"
+    test -e "$WG_PEERS/$1.conf" || bye "Peer '$(basename "$1")' does not exists"
 }
 
 validate_client_name() {

@@ -24,6 +24,7 @@ def check_args(message_text) -> bool:
 
 
 def base_handler(message, command: str):
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     if not check_admin(message.from_user.id):
         return
     if not check_args(message.text):
@@ -43,7 +44,6 @@ def base_handler(message, command: str):
     photo.seek(0)
     bot.send_photo(message.chat.id, photo=photo)
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['add'])
@@ -53,6 +53,7 @@ def add_client_handler(message):
 
 @bot.message_handler(commands=['get_text'])
 def get_text_handler(message):
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     if not check_admin(message.from_user.id):
         return
     if not check_args(message.text):
@@ -69,13 +70,13 @@ def get_text_handler(message):
         bot.edit_message_text(chat_id=first_message.chat.id, message_id=first_message.message_id, text="Error!")
         return
 
-    bot.reply_to(message, command_result.stdout.decode())
+    bot.reply_to(message, "```" + command_result.stdout.decode() + "```")
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['get_file'])
 def get_file_handler(message):
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     if not check_admin(message.from_user.id):
         return
     if not check_args(message.text):
@@ -97,7 +98,6 @@ def get_file_handler(message):
     file.seek(0)
     bot.send_document(message.chat.id, document=file)
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['get'])
@@ -107,6 +107,7 @@ def get_client_handler(message):
 
 @bot.message_handler(commands=['ls'])
 def ls_client_handler(message):
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     if not check_admin(message.from_user.id):
         return
 
@@ -122,6 +123,7 @@ def ls_client_handler(message):
 
 @bot.message_handler(commands=['rm'])
 def get_client_handler(message):
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     if not check_admin(message.from_user.id):
         return
 
@@ -139,7 +141,6 @@ def get_client_handler(message):
         bot.reply_to(message, "Error")
         return
 
-    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
 
 
