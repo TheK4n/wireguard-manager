@@ -53,7 +53,7 @@ def add_client_handler(message):
 
 @bot.message_handler(commands=['get'])
 def get_client_handler(message):
-    base_handler(message, "get_client_qrcode")
+    base_handler(message, "get_tg")
 
 
 @bot.message_handler(commands=['ls'])
