@@ -36,7 +36,7 @@ def base_handler(message, command: str):
     command_result = execute_sh("wg_manager.sh", command, client_name)
 
     if command_result.returncode:
-        logger.error(f"Shell returned non-zero code, {command_result.stderr.decode()}")
+        logger.error(command_result.stderr.decode())
         bot.edit_message_text(chat_id=first_message.chat.id, message_id=first_message.message_id, text="Error!")
         return
     photo = BytesIO(command_result.stdout)
@@ -64,7 +64,7 @@ def ls_client_handler(message):
     command_result = execute_sh("wg_manager.sh", "ls", "")
 
     if command_result.returncode:
-        logger.error("Shell returned non-zero code")
+        logger.error(command_result.stderr.decode())
         bot.reply_to(message, "Error")
         return
 
@@ -86,7 +86,7 @@ def get_client_handler(message):
     command_result = execute_sh("wg_manager.sh", "rm", client_name)
 
     if command_result.returncode:
-        logger.error("Shell returned non-zero code")
+        logger.error(command_result.stderr.decode())
         bot.reply_to(message, "Error")
         return
 
