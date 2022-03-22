@@ -43,7 +43,7 @@ def base_handler(message, command: str):
     photo.seek(0)
     bot.send_photo(message.chat.id, photo=photo)
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"command '{command}' executed")
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['add'])
@@ -71,7 +71,7 @@ def get_text_handler(message):
 
     bot.reply_to(message, command_result.stdout.decode())
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"command 'get_text' executed")
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['get_file'])
@@ -95,9 +95,9 @@ def get_file_handler(message):
     file = BytesIO(command_result.stdout)
     file.name = client_name + ".conf"
     file.seek(0)
-    bot.send_document(message.from_user.id, document=file)
+    bot.send_document(message.chat.id, document=file)
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
-    logger.info(f"command 'get_text' executed")
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
 
 
 @bot.message_handler(commands=['get'])
@@ -139,7 +139,7 @@ def get_client_handler(message):
         bot.reply_to(message, "Error")
         return
 
-    bot.reply_to(message, f"Client '{client_name}' was removed")
+    logger.info(f"'{message.text}' executed from {message.from_user.username}:{message.from_user.id}")
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
 
 
