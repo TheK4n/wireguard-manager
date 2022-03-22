@@ -28,8 +28,14 @@ async def get_client(call: CallbackQuery, state: FSMContext):
 @dp.message_handler(state=AddClient.name)
 async def get_client_2(message: Message, state: FSMContext):
     client_name = message.text
-    photo = put_bytes_to_file(add_client(client_name))
-    await message.answer(f"Client \"{client_name}\" was added, here his QR code")
-    await message.answer_photo(photo=photo)
+    command_result = add_client(client_name)
+
+    if command_result.returncode:
+        await message.answer("Error")
+    else:
+        photo = put_bytes_to_file(command_result.stdout)
+        await message.answer(f"Client \"{client_name}\" was added, here his QR code")
+        await message.answer_photo(photo=photo)
+
     await message.answer("WireGuard Manager bot menu", reply_markup=menu)
     await state.finish()

@@ -25,8 +25,8 @@ def get_config_raw(client_name: str) -> bytes:
     return execute_command("get_file", client_name).stdout
 
 
-def add_client(client_name: str) -> bytes:
-    return execute_command("add_tg", client_name).stdout
+def add_client(client_name: str):
+    return execute_command("add_tg", client_name)
 
 
 def delete_client(client_name: str):
