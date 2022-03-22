@@ -70,7 +70,7 @@ def get_text_handler(message):
         bot.edit_message_text(chat_id=first_message.chat.id, message_id=first_message.message_id, text="Error!")
         return
 
-    bot.reply_to(message, "```" + command_result.stdout.decode() + "```")
+    bot.reply_to(message, command_result.stdout.decode())
     bot.delete_message(chat_id=first_message.chat.id, message_id=first_message.message_id)
 
 
