@@ -77,9 +77,8 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await call.answer()
     elif command == "delete":
         if not delete_client(client_name).returncode:
-            await call.message.answer("Client deleted", reply_markup=menu)
+            await call.message.edit_text("Client deleted", reply_markup=menu)
             await call.answer()
-            await call.message.delete()
             await state.finish()
 
 
