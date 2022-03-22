@@ -129,12 +129,12 @@ get_client_qrcode_png() {
 
 show_client_qrcode() {
     is_exists_client_config "$1"
-    qrencode -t ansiutf8 -l L -r $WG_PEERS/"$1".conf
+    qrencode -t ansiutf8 -l L -r $WG_PEERS/"$1".conf | less -R
 }
 
 cmd_add_client() {
     add_client "$1" >/dev/null
-    show_client_qrcode "$1"
+    show_client_qrcode "$1" | less -R
     echo "It also available in $WG_PEERS/$1.conf"
 }
 
