@@ -80,8 +80,13 @@ is_exists_client_config() {
     test -e "$WG_PEERS/$1.conf" || bye "Config '$(basename "$1")' not exists"
 }
 
+validate_client_name() {
+    [[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]] || bye "Wrong client name '$1'"
+}
+
 add_client() {
     test -e "$WG_PEERS/$1.conf" && bye "Peer '$1' already exists"
+    validate_client_name "$1"
     client_private_key=$(wg genkey)
     client_public_key=$(echo "$client_private_key" | wg pubkey)
     client_psk=$(wg genpsk)
