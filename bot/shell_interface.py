@@ -5,12 +5,13 @@ from data import WG_MANAGER_PATH
 
 
 def execute_command(command: str, *args) -> subprocess.CompletedProcess:
-    return subprocess.run(["bash", WG_MANAGER_PATH, command, args if args else ""], capture_output=True)
+    command_ = ["bash", WG_MANAGER_PATH, command]
+    command_.append(list(args) if args else "")
+    return subprocess.run(command_, capture_output=True)
 
 
 def get_clients_from_manager() -> list:
-    return ["asdfasd", "adsasdv", "cvjadfivsad"]
-    #return execute_command("ls").stdout.decode().split("\n")
+    return execute_command("ls").stdout.decode().split("\n")
 
 
 def get_config_qrcode(client_name: str) -> bytes:
