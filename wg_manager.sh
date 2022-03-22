@@ -165,6 +165,6 @@ case "$1" in
     get_client_config) shift;  get_client "$@" ;;
     ls) shift;                 get_clients_names "$@" ;;
     add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
-    *)                         bye "Need command" ;;
+    *)                         bye "Wrong command: '$1'" ;;
 esac
 exit 0
