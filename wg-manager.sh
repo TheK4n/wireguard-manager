@@ -15,17 +15,17 @@ CLIENT_DNSs=208.67.222.222,208.67.220.220
 
 bye() {
     echo "$0: Error: $1" >&2
-    exit 1
+    exit $2
 }
 
 is_root() {
     if [ "${EUID}" -ne 0 ]; then
-        bye "You need to run this script as root"
+        bye "You need to run this script as root" 1
     fi
 }
 
 is_exists_requirements() {
-    which "$1" >/dev/null || bye "'$1' not found"
+    which "$1" >/dev/null || bye "'$1' not found" 1
 }
 
 check_requirements() {
@@ -77,15 +77,15 @@ get_global_ipv4() {
 }
 
 is_exists_client_config() {
-    test -e "$WG_PEERS/$1.conf" || bye "Peer '$(basename "$1")' does not exists"
+    test -e "$WG_PEERS/$1.conf" || bye "Peer '$(basename "$1")' does not exists" 10
 }
 
 validate_client_name() {
-    [[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]] || bye "Wrong client name '$1'"
+    [[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]] || bye "Wrong client name '$1'" 11
 }
 
 add_client() {
-    test -e "$WG_PEERS/$1.conf" && bye "Peer '$1' already exists"
+    test -e "$WG_PEERS/$1.conf" && bye "Peer '$1' already exists" 12
     validate_client_name "$1"
     client_private_key=$(wg genkey)
     client_public_key=$(echo "$client_private_key" | wg pubkey)
@@ -93,7 +93,7 @@ add_client() {
     oldest_client_ip=$(grep -A 3 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
 
 
-    test "$oldest_client_ip" -gt 253 && bye "Only 253 peers" # 24 subnet
+    test "$oldest_client_ip" -gt 253 && bye "Only 253 peers" 24 # 24 subnet
     test -z "$oldest_client_ip" && client_ip=$WG_SUBNET"2" || client_ip=$WG_SUBNET$(("$oldest_client_ip" + 1))
     echo -e "\n# Client $1\n[Peer]\nPublicKey = $client_public_key\nPresharedKey = $client_psk\nAllowedIPs = $client_ip/32" >> $WG_CONF
     restart_service
@@ -183,7 +183,7 @@ case "$1" in
     get_tg) shift;             get_client_qrcode_png "$@" ;;
     get_file) shift;           get_client "$@" ;;
     add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
-    "") shift;                 bye "No command, use '$0 usage'" ;;
-    *)                         bye "Wrong command '$1', use '$0 usage'" ;;
+    "") shift;                 bye "No command, use '$0 usage'" 1 ;;
+    *)                         bye "Wrong command '$1', use '$0 usage'" 1 ;;
 esac
 exit 0
