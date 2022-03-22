@@ -161,10 +161,11 @@ case "$1" in
     add) shift;                cmd_add_client  "$@" ;;
     get) shift;                show_client_qrcode  "$@" ;;
     rm) shift;                 delete_client   "$@" ;;
-    get_client_qrcode) shift;  get_client_qrcode_png "$@" ;;
-    get_client_config) shift;  get_client "$@" ;;
     ls) shift;                 get_clients_names "$@" ;;
+    get_tg) shift;             get_client_qrcode_png "$@" ;;
+    get_file) shift;           get_client "$@" ;;
     add_tg) shift;             cmd_add_client_and_get_client_qrcode_png "$@" ;;
-    *)                         bye "Wrong command: '$1'" ;;
+    "") shift;                 bye "No command, use '$0 usage'" ;;
+    *)                         bye "Wrong command '$1', use '$0 usage'" ;;
 esac
 exit 0
