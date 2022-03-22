@@ -14,7 +14,7 @@ async def bot_start(message: types.Message):
 
 @dp.message_handler(CommandHelp(), user_id=ADMINS)
 async def bot_start(message: types.Message):
-    await message.answer("Help")
+    await message.answer("WireGuard Manager bot\n\nGithub: https://github.com/thek4n/wireguard-manager")
 
 
 @dp.message_handler(Command("menu"), user_id=ADMINS)

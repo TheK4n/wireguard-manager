@@ -10,7 +10,7 @@ from states import GetClient
 
 @dp.callback_query_handler(text="cancel", state=GetClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
-    await call.message.edit_text('Menu', reply_markup=menu)
+    await call.message.edit_text('WireGuard Manager bot menu', reply_markup=menu)
     await state.finish()
 
 
