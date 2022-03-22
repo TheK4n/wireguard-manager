@@ -14,7 +14,7 @@ CLIENT_DNSs=208.67.222.222,208.67.220.220
 
 
 bye() {
-    echo "$0: Error: $1"
+    echo "$0: Error: $1" >&2
     exit 1
 }
 
