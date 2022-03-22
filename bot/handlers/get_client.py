@@ -45,9 +45,11 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
             [
                 InlineKeyboardButton(text="Delete", callback_data=f"delete:{client_name}"),
             ],
+            [
+                InlineKeyboardButton(text="<< Back to menu", callback_data="cancel")
+            ]
         ]
     )
-    get_client_menu.insert(cancel)
 
     await call.message.edit_text(f'Client "{client_name}"', reply_markup=get_client_menu)
 
