@@ -9,6 +9,7 @@ def execute_command(command: str, *args) -> subprocess.CompletedProcess:
     for i in args:
         command_.append(i)
     command_.append("")
+    print(command_)
     return subprocess.run(command_, capture_output=True)
 
 
