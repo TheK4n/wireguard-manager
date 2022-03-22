@@ -2,7 +2,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
 
 from keyboards import cancel, menu
-from loader import dp
+from loader import dp, logger
 from shell_interface import add_client, put_bytes_to_file
 from states import AddClient
 
@@ -32,10 +32,12 @@ async def get_client_2(message: Message, state: FSMContext):
 
     if command_result.returncode:
         await message.answer("Error")
+        logger.error(f"adding client {message.text} from user {message.from_user.username}:{message.from_user.id}")
     else:
         photo = put_bytes_to_file(command_result.stdout)
         await message.answer(f"Client \"{client_name}\" was added, here his QR code")
         await message.answer_photo(photo=photo)
+        logger.info(f"added client {message.text} from user {message.from_user.username}:{message.from_user.id}")
 
     await message.answer("WireGuard Manager bot menu", reply_markup=menu)
     await state.finish()

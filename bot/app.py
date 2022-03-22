@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import executor, types
-from loader import dp
+from loader import dp, logger
 import handlers
 
 
@@ -17,11 +17,12 @@ async def set_default_commands(dispatcher):
 
 async def on_startup(dispatcher):
     await asyncio.sleep(1)
-
     await set_default_commands(dispatcher)
+    logger.info("Bot started")
 
 
 async def on_shutdown(dispatcher):
+    logger.info("Bot stopped")
     await dispatcher.close()
 
 

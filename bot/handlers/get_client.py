@@ -2,7 +2,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaDocument
 
 from keyboards import cancel, menu
-from loader import dp
+from loader import dp, logger
 from shell_interface import get_clients_from_manager, get_config_qrcode, put_bytes_to_file, get_config_raw, \
     delete_client
 from states import GetClient
@@ -67,18 +67,20 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         photo.name = client_name + ".png"
         await call.message.answer_photo(photo=photo)
         await call.answer()
+        logger.info(f"get qrcode {client_name} from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_file":
         document = put_bytes_to_file(get_config_raw(client_name))
         document.name = client_name + ".conf"
         await call.message.answer_document(document=document)
         await call.answer()
+        logger.info(f"get file {client_name} from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_raw":
         await call.message.answer(get_config_raw(client_name).decode())
         await call.answer()
+        logger.info(f"get raw {client_name} from user {call.from_user.username}:{call.from_user.id}")
     elif command == "delete":
         if not delete_client(client_name).returncode:
             await call.message.edit_text("Client deleted", reply_markup=menu)
             await call.answer()
             await state.finish()
-
-
+            logger.info(f"deleted {client_name} from user {call.from_user.username}:{call.from_user.id}")
