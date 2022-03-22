@@ -61,11 +61,11 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
     if command == "get_qrcode":
         photo = put_bytes_to_file(get_config_qrcode(client_name))
         photo.name = client_name + ".png"
-        await call.message.answer_photo(photo=InputMediaPhoto(photo))
+        await call.message.answer_photo(photo=photo)
     elif command == "get_file":
         document = put_bytes_to_file(get_config_raw(client_name))
         document.name = client_name + ".conf"
-        await call.message.answer_document(document=InputMediaDocument(document))
+        await call.message.answer_document(document=document)
     elif command == "get_raw":
         await call.message.answer(get_config_raw(client_name).decode())
     elif command == "delete":

@@ -21,7 +21,7 @@ def get_config_qrcode(client_name: str) -> bytes:
 
 
 def get_config_raw(client_name: str) -> bytes:
-    return execute_command("get_client", client_name).stdout
+    return execute_command("get_file", client_name).stdout
 
 
 def add_client(client_name: str) -> bytes:
