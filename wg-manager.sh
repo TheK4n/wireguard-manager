@@ -124,7 +124,7 @@ get_client() {
 }
 
 get_clients_names() {
-    grep "# Client" $WG_CONF | awk '{print NR".", $3}'
+    grep "# Client" $WG_CONF | awk '{print $3}'
 }
 
 get_client_qrcode_png() {
