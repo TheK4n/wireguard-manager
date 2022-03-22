@@ -6,9 +6,9 @@ from data import WG_MANAGER_PATH
 
 def execute_command(command: str, *args) -> subprocess.CompletedProcess:
     command_ = ["bash", WG_MANAGER_PATH, command]
-    command_.append("")
     for i in args:
         command_.append(i)
+    command_.append("")
     return subprocess.run(command_, capture_output=True)
 
 
