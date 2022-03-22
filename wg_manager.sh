@@ -143,6 +143,18 @@ cmd_add_client_and_get_client_qrcode_png() {
     get_client_qrcode_png "$1"
 }
 
+cmd_usage() {
+    echo "Usage $0"
+    echo -e "\tinit - Initialize wireguard"
+    echo -e "\tadd <name> - add client and show qrcode"
+    echo -e "\tget <name> - show qrcode client "
+    echo -e "\trm <name> - remove client"
+    echo -e "\tls - list clients"
+    echo -e "\tget_tg <name> - get client qrcode in bytes"
+    echo -e "\tget_file <name> - get client config file"
+    echo -e "\tadd_tg <name> - add client and get qrcode in bytes"
+}
+
 cmd_init() {
     check_all
     mkdir -p $WG_PEERS
@@ -157,6 +169,7 @@ cmd_init() {
 
 test -e && source $WG_PARAMS
 case "$1" in
+    usage) shift;              cmd_usage   "$@" ;;
     init) shift;               cmd_init    "$@" ;;
     add) shift;                cmd_add_client  "$@" ;;
     get) shift;                show_client_qrcode  "$@" ;;
