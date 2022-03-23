@@ -23,9 +23,12 @@
 
 Wireguard manager with Telegram integration
 
-<img src="preview.gif" alt="My Project GIF" width="320">
-
+<p align="center">
+<a href="#">
+    <img align="center" width="420" src=".assets/preview.gif">
+</a>
 <a id="chapter-1"></a>
+
 ## Requirements
 
 * **wg**  - Wireguard CLI
