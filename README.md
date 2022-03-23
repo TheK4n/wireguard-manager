@@ -25,7 +25,7 @@ Wireguard manager with Telegram integration
 
 <p align="center">
 <a href="#">
-    <img align="center" width="420" src=".assets/preview.gif">
+    <img align="center" width="380" src=".assets/preview.gif">
 </a>
 <a id="chapter-1"></a>
 
