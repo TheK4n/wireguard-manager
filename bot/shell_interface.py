@@ -28,7 +28,7 @@ def raw_to_md(raw: str) -> str:
         try:
             res += f"{pre[0]} = ```{pre[1]}```\n"
         except IndexError:
-            res += ("\\" if i[0] == "[" else "\n") + i + "\n"
+            res += ("\\" if i in ("[Peer]", "[Interface]") else "\n") + i + "\n"
     return res.strip()
 
 
