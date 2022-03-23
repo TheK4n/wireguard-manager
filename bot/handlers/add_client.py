@@ -20,7 +20,7 @@ async def get_client(call: CallbackQuery, state: FSMContext):
 
     cancel_menu = InlineKeyboardMarkup()
     cancel_menu.insert(cancel)
-    await call.message.edit_text('Send me a name for a new client', reply_markup=cancel_menu)
+    await call.message.edit_text(MESSAGES["SEND_NAME"], reply_markup=cancel_menu)
     await call.answer()
 
     await AddClient.name.set()
@@ -36,7 +36,7 @@ async def get_client_2(message: Message, state: FSMContext):
         logger.error(f"adding client {message.text} from user {message.from_user.username}:{message.from_user.id}")
     else:
         photo = put_bytes_to_file(command_result.stdout)
-        await message.answer(f"Client \"{client_name}\" was added, here his QR code")
+        await message.reply(MESSAGES["CLIENT_ADDED"].format(client_name=client_name))
         await message.answer_photo(photo=photo)
         logger.info(f"added client {message.text} from user {message.from_user.username}:{message.from_user.id}")
 

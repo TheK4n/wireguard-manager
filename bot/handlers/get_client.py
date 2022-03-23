@@ -40,7 +40,7 @@ async def get_client(call: CallbackQuery, state: FSMContext):
         choice.insert(InlineKeyboardButton(text=client_name, callback_data=f'client:{client_name}'))
     choice.insert(cancel)
 
-    await call.message.edit_text('Clients', reply_markup=choice)
+    await call.message.edit_text(MESSAGES["CLIENTS"], reply_markup=choice)
     await call.answer()
     await GetClient.name.set()
 
@@ -105,7 +105,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
             ]
         )
         await call.answer()
-        await call.message.edit_text(f"You really want to delete client \"{client_name}\"?", reply_markup=conf_del)
+        await call.message.edit_text(MESSAGES["CLI_DEL_CONF"].format(client_name=client_name), reply_markup=conf_del)
         await GetClient.next()
 
 
@@ -113,7 +113,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
 async def get_client_4(call: CallbackQuery, state: FSMContext):
     command, client_name = call.data.split(":")
     delete_client(client_name)
-    await call.message.edit_text("Client deleted", reply_markup=menu)
+    await call.message.edit_text(MESSAGES["CLI_DEL"].format(client_name=client_name), reply_markup=menu)
     await call.answer()
     await state.finish()
     logger.info(f"deleted client \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
