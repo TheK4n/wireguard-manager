@@ -8,7 +8,7 @@ from shell_interface import get_clients_from_manager, get_config_qrcode, put_byt
 from states import GetClient
 
 
-def gen_pages(lst) -> list[list[str]]:
+def gen_pages(lst):
     res = []
     page = 0
     while 1:
