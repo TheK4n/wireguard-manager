@@ -1,6 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
+from data import MESSAGES
 from keyboards import cancel, menu
 from loader import dp, logger
 from shell_interface import get_clients_from_manager, get_config_qrcode, put_bytes_to_file, get_config_raw, \
@@ -25,7 +26,7 @@ def gen_pages(lst):
 
 @dp.callback_query_handler(text="cancel", state=GetClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
-    await call.message.edit_text('WireGuard Manager bot menu', reply_markup=menu)
+    await call.message.edit_text(MESSAGES["MENU"], reply_markup=menu)
     await call.answer()
     await state.finish()
 

@@ -23,7 +23,8 @@ async def on_startup(dispatcher):
 
 async def on_shutdown(dispatcher):
     logger.info("Bot stopped")
-    await dispatcher.close()
+    await dispatcher.storage.close()
+    await dispatcher.storage.wait_closed()
 
 
 if __name__ == '__main__':

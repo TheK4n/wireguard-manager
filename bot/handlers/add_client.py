@@ -1,6 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
 
+from data import MESSAGES
 from keyboards import cancel, menu
 from loader import dp, logger
 from shell_interface import add_client, put_bytes_to_file
@@ -9,7 +10,7 @@ from states import AddClient
 
 @dp.callback_query_handler(text="cancel", state=AddClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
-    await call.message.edit_text('WireGuard Manager bot menu', reply_markup=menu)
+    await call.message.edit_text(MESSAGES["MENU"], reply_markup=menu)
     await call.answer()
     await state.finish()
 
@@ -39,5 +40,5 @@ async def get_client_2(message: Message, state: FSMContext):
         await message.answer_photo(photo=photo)
         logger.info(f"added client {message.text} from user {message.from_user.username}:{message.from_user.id}")
 
-    await message.answer("WireGuard Manager bot menu", reply_markup=menu)
+    await message.answer(MESSAGES["MENU"], reply_markup=menu)
     await state.finish()
