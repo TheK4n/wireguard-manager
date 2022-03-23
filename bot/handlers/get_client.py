@@ -104,7 +104,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
             ]
         )
         await call.answer()
-        await call.message.edit_text("You really want to delete?", reply_markup=conf_del)
+        await call.message.edit_text(f"You really want to delete client \"{client_name}\"?", reply_markup=conf_del)
         await GetClient.next()
 
 
