@@ -32,8 +32,8 @@ def raw_to_md(raw: str) -> str:
     return res
 
 
-def get_config_raw(client_name: str) -> str:
-    return raw_to_md(execute_command("get_file", client_name).stdout.decode())
+def get_config_raw(client_name: str) -> bytes:
+    return execute_command("get_file", client_name).stdout
 
 
 def add_client(client_name: str):
