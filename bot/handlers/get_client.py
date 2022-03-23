@@ -84,13 +84,13 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await call.answer()
         logger.info(f"get qrcode \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_file":
-        document = put_bytes_to_file(get_config_raw(client_name))
+        document = put_bytes_to_file(get_config_raw(client_name).encode())
         document.name = client_name + ".conf"
         await call.message.answer_document(document=document)
         await call.answer()
         logger.info(f"get file \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_raw":
-        await call.message.answer(get_config_raw(client_name).decode())
+        await call.message.answer(get_config_raw(client_name), parse_mode="markdown")
         await call.answer()
         logger.info(f"get raw \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "delete":

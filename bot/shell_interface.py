@@ -21,8 +21,19 @@ def get_config_qrcode(client_name: str) -> bytes:
     return execute_command("get_tg", client_name).stdout
 
 
-def get_config_raw(client_name: str) -> bytes:
-    return execute_command("get_file", client_name).stdout
+def raw_to_md(raw: str) -> str:
+    res = ''
+    for i in raw.split("\n"):
+        pre = i.split(" = ")
+        try:
+            res += f"{pre[0]} = ```{pre[1]}```\n"
+        except IndexError:
+            res += i + "\n"
+    return res
+
+
+def get_config_raw(client_name: str) -> str:
+    return raw_to_md(execute_command("get_file", client_name).stdout.decode())
 
 
 def add_client(client_name: str):
