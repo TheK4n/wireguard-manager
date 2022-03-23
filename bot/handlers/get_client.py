@@ -8,6 +8,21 @@ from shell_interface import get_clients_from_manager, get_config_qrcode, put_byt
 from states import GetClient
 
 
+def gen_pages(lst) -> list[list[str]]:
+    res = []
+    page = 0
+    while 1:
+        res.append([])
+        for i in range(4):
+            try:
+                res[page].append(lst[i + page * 4])
+            except IndexError:
+                if not res[-1]:
+                    res.pop(-1)
+                return res
+        page += 1
+
+
 @dp.callback_query_handler(text="cancel", state=GetClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
     await call.message.edit_text('WireGuard Manager bot menu', reply_markup=menu)
@@ -17,7 +32,6 @@ async def cancel_order(call: CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text_contains="clients")
 async def get_client(call: CallbackQuery, state: FSMContext):
-
     clients = get_clients_from_manager()
 
     choice = InlineKeyboardMarkup()
@@ -79,8 +93,26 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await call.answer()
         logger.info(f"get raw \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "delete":
-        if not delete_client(client_name).returncode:
-            await call.message.edit_text("Client deleted", reply_markup=menu)
-            await call.answer()
-            await state.finish()
-            logger.info(f"deleted client \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
+        conf_del = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text="Confirm", callback_data=f"confirm:{client_name}")
+                ],
+                [
+                    InlineKeyboardButton(text="<< Back to menu", callback_data="cancel")
+                ],
+            ]
+        )
+        await call.answer()
+        await call.message.edit_text("You really want to delete?", reply_markup=conf_del)
+        await GetClient.next()
+
+
+@dp.callback_query_handler(state=GetClient.del_confirm)
+async def get_client_4(call: CallbackQuery, state: FSMContext):
+    command, client_name = call.data.split(":")
+    delete_client(client_name)
+    await call.message.edit_text("Client deleted", reply_markup=menu)
+    await call.answer()
+    await state.finish()
+    logger.info(f"deleted client \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
