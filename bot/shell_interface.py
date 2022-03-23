@@ -28,7 +28,7 @@ def raw_to_md(raw: str) -> str:
         try:
             res += f"{pre[0]} = ```{pre[1]}```\n"
         except IndexError:
-            res += i + "\n"
+            res += "\\" + i + "\n"
     return res
 
 
