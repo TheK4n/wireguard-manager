@@ -23,6 +23,7 @@
 
 Wireguard manager with Telegram integration
 
+<img src="preview.gif" alt="My Project GIF" width="320">
 
 <a id="chapter-1"></a>
 ## Requirements
