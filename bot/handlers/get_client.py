@@ -90,7 +90,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await call.answer()
         logger.info(f"get file \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_raw":
-        await call.message.answer(raw_to_md(get_config_raw(client_name).decode()), parse_mode="markdown")
+        await call.message.answer(raw_to_md(get_config_raw(client_name).decode()), parse_mode="html")
         await call.answer()
         logger.info(f"get raw \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "delete":

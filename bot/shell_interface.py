@@ -26,9 +26,9 @@ def raw_to_md(raw: str) -> str:
     for i in raw.split("\n"):
         pre = i.split(" = ")
         try:
-            res += f"{pre[0]} = ```{pre[1]}```\n"
+            res += f"{pre[0]} = <code>{pre[1]}</code>\n"
         except IndexError:
-            res += ("\\" if i in ("[Peer]", "[Interface]") else "") + i + "\n"
+            res += i + "\n"
     return res.strip()
 
 
