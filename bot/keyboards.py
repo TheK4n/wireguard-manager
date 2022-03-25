@@ -8,7 +8,7 @@ menu = InlineKeyboardMarkup(
             InlineKeyboardButton(text=ButtonText.ADD_CLIENT, callback_data='add_client'),
         ],
         [
-            InlineKeyboardButton(text=ButtonText.ClIENTS, callback_data="clients"),
+            InlineKeyboardButton(text=ButtonText.CLIENTS, callback_data="clients"),
         ],
 
     ]
