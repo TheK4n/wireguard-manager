@@ -28,3 +28,4 @@ class ButtonText:
     GET_RAW = "Get raw"
     DELETE = "Delete"
     CONFIRM = "Confirm!"
+    CLIENTS = "Clients"
