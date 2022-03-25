@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
-from data import MESSAGES
+from data import Text, ButtonText
 from keyboards import cancel, menu
 from loader import dp, logger
 from shell_interface import get_clients_from_manager, get_config_qrcode, put_bytes_to_file, get_config_raw, \
@@ -26,7 +26,7 @@ def gen_pages(lst):
 
 @dp.callback_query_handler(text="cancel", state=GetClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
-    await call.message.edit_text(MESSAGES["MENU"], reply_markup=menu)
+    await call.message.edit_text(Text.MENU, reply_markup=menu)
     await call.answer()
     await state.finish()
 
@@ -40,7 +40,7 @@ async def get_client(call: CallbackQuery, state: FSMContext):
         choice.insert(InlineKeyboardButton(text=client_name, callback_data=f'client:{client_name}'))
     choice.insert(cancel)
 
-    await call.message.edit_text(MESSAGES["CLIENTS"], reply_markup=choice)
+    await call.message.edit_text(Text.CLIENTS, reply_markup=choice)
     await call.answer()
     await GetClient.name.set()
 
@@ -52,22 +52,22 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
     get_client_menu = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="Get QR Code", callback_data=f'get_qrcode:{client_name}'),
-                InlineKeyboardButton(text="Get File", callback_data=f'get_file:{client_name}'),
+                InlineKeyboardButton(text=ButtonText.GET_QR, callback_data=f'get_qrcode:{client_name}'),
+                InlineKeyboardButton(text=ButtonText.GET_FILE, callback_data=f'get_file:{client_name}'),
             ],
             [
-                InlineKeyboardButton(text="Get Raw", callback_data=f"get_raw:{client_name}"),
+                InlineKeyboardButton(text=ButtonText.GET_RAW, callback_data=f"get_raw:{client_name}"),
             ],
             [
-                InlineKeyboardButton(text="Delete", callback_data=f"delete:{client_name}"),
+                InlineKeyboardButton(text=ButtonText.DELETE, callback_data=f"delete:{client_name}"),
             ],
             [
-                InlineKeyboardButton(text="<< Back to menu", callback_data="cancel")
+                InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel")
             ]
         ]
     )
 
-    await call.message.edit_text(f'Client "{client_name}"', reply_markup=get_client_menu)
+    await call.message.edit_text(Text.CLIENT.format(client_name), reply_markup=get_client_menu)
     await call.answer()
 
     await GetClient.next()
@@ -97,15 +97,15 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         conf_del = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
-                    InlineKeyboardButton(text="Confirm", callback_data=f"confirm:{client_name}")
+                    InlineKeyboardButton(text=ButtonText.CONFIRM, callback_data=f"confirm:{client_name}")
                 ],
                 [
-                    InlineKeyboardButton(text="<< Back to menu", callback_data="cancel")
+                    InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel")
                 ],
             ]
         )
         await call.answer()
-        await call.message.edit_text(MESSAGES["CLI_DEL_CONF"].format(client_name=client_name), reply_markup=conf_del)
+        await call.message.edit_text(Text.CLIENT_DELETE_CONFIRM.format(client_name=client_name), reply_markup=conf_del)
         await GetClient.next()
 
 
@@ -113,7 +113,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
 async def get_client_4(call: CallbackQuery, state: FSMContext):
     command, client_name = call.data.split(":")
     delete_client(client_name)
-    await call.message.edit_text(MESSAGES["CLI_DEL"].format(client_name=client_name), reply_markup=menu)
+    await call.message.edit_text(Text.CLIENT_DELETED.format(client_name=client_name), reply_markup=menu)
     await call.answer()
     await state.finish()
     logger.info(f"deleted client \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
