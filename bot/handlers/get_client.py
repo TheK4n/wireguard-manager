@@ -67,7 +67,7 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
         ]
     )
 
-    await call.message.edit_text(Text.CLIENT.format(client_name), reply_markup=get_client_menu)
+    await call.message.edit_text(Text.CLIENT.format(client_name=client_name), reply_markup=get_client_menu)
     await call.answer()
 
     await GetClient.next()
