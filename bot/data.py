@@ -18,6 +18,11 @@ class Text:
     CLIENT_DELETED = "Client \"{client_name}\" was deleted"
     CLIENT_DELETE_CONFIRM = "You really want to delete client \"{client_name}\"?"
     ASK_NAME = "Send me a name for a new client"
+    ERROR_1 = "System fail, check logs"
+    ERROR_11 = "Wrong name, you can use letters, numbers and \"-\", \"_\""
+    ERROR_10 = "Client \"{client_name}\" does not exists"
+    ERROR_12 = "Client \"{client_name}\" already exists"
+    ERROR_24 = "24 net supports only 253 peers"
 
 
 class ButtonText:

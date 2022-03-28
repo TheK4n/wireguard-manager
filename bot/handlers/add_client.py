@@ -32,7 +32,14 @@ async def get_client_2(message: Message, state: FSMContext):
     command_result = add_client(client_name)
 
     if command_result.returncode:
-        await message.answer("Error")
+        if command_result.returncode == 1:
+            await message.answer(Text.ERROR_1)
+        elif command_result.returncode == 11:
+            await message.answer(Text.ERROR_11)
+        elif command_result.returncode == 12:
+            await message.answer(Text.ERROR_12)
+        elif command_result.returncode == 24:
+            await message.answer(Text.ERROR_24)
         logger.error(f"adding client {message.text} from user {message.from_user.username}:{message.from_user.id}")
     else:
         photo = put_bytes_to_file(command_result.stdout)
