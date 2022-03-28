@@ -37,7 +37,7 @@ async def get_client_2(message: Message, state: FSMContext):
         elif command_result.returncode == 11:
             await message.answer(Text.ERROR_11)
         elif command_result.returncode == 12:
-            await message.answer(Text.ERROR_12)
+            await message.answer(Text.ERROR_12.format(client_name=client_name))
         elif command_result.returncode == 24:
             await message.answer(Text.ERROR_24)
         logger.error(f"adding client {message.text} from user {message.from_user.username}:{message.from_user.id}")
