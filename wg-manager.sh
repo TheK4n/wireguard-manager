@@ -90,12 +90,12 @@ add_client() {
     client_private_key=$(wg genkey)
     client_public_key=$(echo "$client_private_key" | wg pubkey)
     client_psk=$(wg genpsk)
-    oldest_client_ip=$(grep -A 3 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
+    most_recent_client_ip=$(grep -A 3 '\[Peer\]' $WG_CONF | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | awk -F '.' '{printf $4"\n"}' | sort -nr | head -n 1)
 
-    test "$oldest_client_ip" -gt 253 && bye "Only 253 peers" 24 # 24 subnet
+    test "$most_recent_client_ip" -gt 253 && bye "Only 253 peers" 24 # 24 subnet
 
     # most recent client address + 1
-    test -z "$oldest_client_ip" && client_ip=$WG_SUBNET"2" || client_ip=$WG_SUBNET$(("$oldest_client_ip" + 1))
+    test -z "$most_recent_client_ip" && client_ip=$WG_SUBNET"2" || client_ip=$WG_SUBNET$(("$most_recent_client_ip" + 1))
     echo -e "\n# Client $1\n[Peer]\nPublicKey = $client_public_key\nPresharedKey = $client_psk\nAllowedIPs = $client_ip/32" >> $WG_CONF
     restart_service
 
