@@ -8,6 +8,14 @@ ADMINS = env.list("ADMINS")
 WG_MANAGER_PATH = env.str("WG_MANAGER_PATH")
 
 
+class ReturnCodes:
+    SystemFail = 1
+    PeerNotExists = 10
+    ValidationError = 11
+    PeerAlreadyExists = 12
+    SubnetError = 24
+
+
 class Text:
     MENU = "WireGuard Manager bot menu"
     HELP = "WireGuard Manager bot\n\nGithub: https://github.com/thek4n/wireguard-manager"
