@@ -18,7 +18,7 @@ class ReturnCodes:
 
 class Text:
     MENU = "WireGuard Manager bot menu"
-    HELP = "WireGuard Manager bot\n\nGithub: https://github.com/thek4n/wireguard-manager"
+    HELP = "WireGuard Manager bot\n\nGithub: https://github.com/thek4n/wireguard-manager \nManual: https://telegra.ph/Instrukciya-po-ustanovke-klienta-Wireguard-VPN-04-19"
     START = "Hello, Access allowed to {name}"
     CLIENTS = "Clients"
     CLIENT = "Client \"{client_name}\""
