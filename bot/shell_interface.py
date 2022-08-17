@@ -26,7 +26,7 @@ def raw_to_html(raw: str) -> str:
     for i in raw.split("\n"):
         pre = i.split(" = ")
         try:
-            if pre[0] == "PrivateKey":
+            if pre[0] in ("PrivateKey", "PresharedKey"):
                 res += f"{pre[0]} = <span class=\"tg-spoiler\">{pre[1]}</span>\n"
             else:
                 res += f"{pre[0]} = <code>{pre[1]}</code>\n"
