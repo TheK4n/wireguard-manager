@@ -21,12 +21,15 @@ def get_config_qrcode(client_name: str) -> bytes:
     return execute_command("get_tg", client_name).stdout
 
 
-def raw_to_md(raw: str) -> str:
+def raw_to_html(raw: str) -> str:
     res = ''
     for i in raw.split("\n"):
         pre = i.split(" = ")
         try:
-            res += f"{pre[0]} = <code>{pre[1]}</code>\n"
+            if pre[0] == "PrivateKey":
+                res += f"{pre[0]} = <span class=\"tg-spoiler\"><code>{pre[1]}</code></span>\n"
+            else:
+                res += f"{pre[0]} = <code>{pre[1]}</code>\n"
         except IndexError:
             res += i + "\n"
     return res.strip()

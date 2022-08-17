@@ -5,7 +5,7 @@ from data import Text, ButtonText
 from keyboards import cancel, menu
 from loader import dp, logger
 from shell_interface import get_clients_from_manager, get_config_qrcode, put_bytes_to_file, get_config_raw, \
-    delete_client, raw_to_md
+    delete_client, raw_to_html
 from states import GetClient
 
 
@@ -90,7 +90,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await call.answer()
         logger.info(f"get file \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "get_raw":
-        await call.message.answer(raw_to_md(get_config_raw(client_name).decode()), parse_mode="html")
+        await call.message.answer(raw_to_html(get_config_raw(client_name).decode()), parse_mode="html")
         await call.answer()
         logger.info(f"get raw \"{client_name}\" from user {call.from_user.username}:{call.from_user.id}")
     elif command == "delete":
