@@ -9,12 +9,11 @@ def execute_command(command: str, *args) -> subprocess.CompletedProcess:
     for i in args:
         command_.append(i)
     command_.append("")
-    print(command_)
     return subprocess.run(command_, capture_output=True)
 
 
 def get_clients_from_manager() -> list:
-    return execute_command("ls").stdout.decode().split("\n")
+    return execute_command("ls").stdout.decode().strip().split("\n")
 
 
 def get_config_qrcode(client_name: str) -> bytes:

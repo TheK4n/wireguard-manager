@@ -1,3 +1,4 @@
+import math
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -9,43 +10,76 @@ from shell_interface import get_clients_from_manager, get_config_qrcode, put_byt
 from states import GetClient
 
 
-def gen_pages(lst):
-    res = []
-    page = 0
-    while 1:
-        res.append([])
-        for i in range(4):
-            try:
-                res[page].append(lst[i + page * 4])
-            except IndexError:
-                if not res[-1]:
-                    res.pop(-1)
-                return res
-        page += 1
+NUMBER_OF_CLIENTS_ON_PAGE = 6
 
 
-@dp.callback_query_handler(text="cancel", state=GetClient)
+def get_clients_with_offset_fill_blank_clients(clients, page: int):
+    offset = NUMBER_OF_CLIENTS_ON_PAGE * page
+
+    res = clients[offset:(NUMBER_OF_CLIENTS_ON_PAGE + offset)]
+
+    for _ in range(NUMBER_OF_CLIENTS_ON_PAGE - len(res)):
+        res.append(" "  * 20)
+    return res
+
+
+@dp.callback_query_handler(text_contains="cancel", state=GetClient)
 async def cancel_order(call: CallbackQuery, state: FSMContext):
     await call.message.edit_text(Text.MENU, reply_markup=menu)
     await call.answer()
     await state.finish()
 
 
+@dp.callback_query_handler(text_contains="cancel")
+async def cancel_order2(call: CallbackQuery):
+    await call.message.edit_text(Text.MENU, reply_markup=menu)
+    await call.answer()
+
+
+@dp.callback_query_handler(text="_")
+async def plug(call: CallbackQuery):
+    await call.answer()
+
+
 @dp.callback_query_handler(text_contains="clients")
 async def get_client(call: CallbackQuery, state: FSMContext):
-    clients = get_clients_from_manager()
+    page = int(call.data.split(":")[1])
 
-    choice = InlineKeyboardMarkup()
+    all_clients = get_clients_from_manager()
+
+    total_pages = math.ceil(len(all_clients) / NUMBER_OF_CLIENTS_ON_PAGE)
+
+    if page >= total_pages:
+        page = total_pages
+        await call.answer()
+        return
+
+    if page < 0:
+        page = 0
+        await call.answer()
+        return
+
+    clients = get_clients_with_offset_fill_blank_clients(all_clients, page)
+
+    clients_keyboard = InlineKeyboardMarkup()
     for client_name in clients:
-        choice.insert(InlineKeyboardButton(text=client_name, callback_data=f'client:{client_name}'))
-    choice.insert(cancel)
+        if client_name == " " * 20:
+            clients_keyboard.insert(InlineKeyboardButton(text=client_name, callback_data=f'_'))
+        else:
+            clients_keyboard.insert(InlineKeyboardButton(text=client_name, callback_data=f'client_name:{client_name}'))
 
-    await call.message.edit_text(Text.CLIENTS, reply_markup=choice)
+    prev_page_button = InlineKeyboardButton(text="<", callback_data=f"clients:{page - 1}")
+    current_page_button = InlineKeyboardButton(text=f"{page+1}/{total_pages}", callback_data="_")
+    next_page_button = InlineKeyboardButton(text=">", callback_data=f"clients:{page + 1}")
+
+    clients_keyboard.row(prev_page_button, current_page_button, next_page_button)
+    clients_keyboard.row(cancel)
+
+    await call.message.edit_text(Text.CLIENTS, reply_markup=clients_keyboard)
     await call.answer()
-    await GetClient.name.set()
 
 
-@dp.callback_query_handler(state=GetClient.name)
+@dp.callback_query_handler(text_contains="client_name")
 async def get_client_2(call: CallbackQuery, state: FSMContext):
     client_name = call.data.split(':')[1]
 
@@ -62,7 +96,7 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
                 InlineKeyboardButton(text=ButtonText.DELETE, callback_data=f"delete:{client_name}"),
             ],
             [
-                InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel")
+                InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel:_")
             ]
         ]
     )
@@ -70,10 +104,10 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
     await call.message.edit_text(Text.CLIENT.format(client_name=client_name), reply_markup=get_client_menu)
     await call.answer()
 
-    await GetClient.next()
+    await GetClient.name.set()
 
 
-@dp.callback_query_handler(state=GetClient.choice)
+@dp.callback_query_handler(state=GetClient.name)
 async def get_client_3(call: CallbackQuery, state: FSMContext):
     command, client_name = call.data.split(":")
 
@@ -100,7 +134,7 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
                     InlineKeyboardButton(text=ButtonText.CONFIRM, callback_data=f"confirm:{client_name}")
                 ],
                 [
-                    InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel")
+                    InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel:_")
                 ],
             ]
         )
@@ -109,9 +143,9 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         await GetClient.next()
 
 
-@dp.callback_query_handler(state=GetClient.del_confirm)
+@dp.callback_query_handler(state=GetClient.choice)
 async def get_client_4(call: CallbackQuery, state: FSMContext):
-    command, client_name = call.data.split(":")
+    _, client_name = call.data.split(":")
     delete_client(client_name)
     await call.message.edit_text(Text.CLIENT_DELETED.format(client_name=client_name), reply_markup=menu)
     await call.answer()
