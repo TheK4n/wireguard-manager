@@ -50,14 +50,10 @@ async def get_client(call: CallbackQuery, state: FSMContext):
     total_pages = math.ceil(len(all_clients) / NUMBER_OF_CLIENTS_ON_PAGE)
 
     if page >= total_pages:
-        page = total_pages
-        await call.answer()
-        return
+        page = 0
 
     if page < 0:
-        page = 0
-        await call.answer()
-        return
+        page = total_pages - 1
 
     clients = get_clients_with_offset_fill_blank_clients(all_clients, page)
 
@@ -66,7 +62,7 @@ async def get_client(call: CallbackQuery, state: FSMContext):
         if client_name == " " * 20:
             clients_keyboard.insert(InlineKeyboardButton(text=client_name, callback_data=f'_'))
         else:
-            clients_keyboard.insert(InlineKeyboardButton(text=client_name, callback_data=f'client_name:{client_name}'))
+            clients_keyboard.insert(InlineKeyboardButton(text=client_name, callback_data=f'client_name:{client_name}:{page}'))
 
     prev_page_button = InlineKeyboardButton(text="<", callback_data=f"clients:{page - 1}")
     current_page_button = InlineKeyboardButton(text=f"{page+1}/{total_pages}", callback_data="_")
@@ -82,21 +78,22 @@ async def get_client(call: CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(text_contains="client_name")
 async def get_client_2(call: CallbackQuery, state: FSMContext):
     client_name = call.data.split(':')[1]
+    page = call.data.split(':')[2]
 
     get_client_menu = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text=ButtonText.GET_QR, callback_data=f'get_qrcode:{client_name}'),
-                InlineKeyboardButton(text=ButtonText.GET_FILE, callback_data=f'get_file:{client_name}'),
+                InlineKeyboardButton(text=ButtonText.GET_QR, callback_data=f'get_client_get_name:get_qrcode:{client_name}'),
+                InlineKeyboardButton(text=ButtonText.GET_FILE, callback_data=f'get_client_get_name:get_file:{client_name}'),
             ],
             [
-                InlineKeyboardButton(text=ButtonText.GET_RAW, callback_data=f"get_raw:{client_name}"),
+                InlineKeyboardButton(text=ButtonText.GET_RAW, callback_data=f"get_client_get_name:get_raw:{client_name}"),
             ],
             [
-                InlineKeyboardButton(text=ButtonText.DELETE, callback_data=f"delete:{client_name}"),
+                InlineKeyboardButton(text=ButtonText.DELETE, callback_data=f"get_client_get_name:delete:{client_name}"),
             ],
             [
-                InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data="cancel:_")
+                InlineKeyboardButton(text=ButtonText.BACK_MENU, callback_data=f"clients:{page}")
             ]
         ]
     )
@@ -104,12 +101,10 @@ async def get_client_2(call: CallbackQuery, state: FSMContext):
     await call.message.edit_text(Text.CLIENT.format(client_name=client_name), reply_markup=get_client_menu)
     await call.answer()
 
-    await GetClient.name.set()
 
-
-@dp.callback_query_handler(state=GetClient.name)
+@dp.callback_query_handler(text_contains="get_client_get_name")
 async def get_client_3(call: CallbackQuery, state: FSMContext):
-    command, client_name = call.data.split(":")
+    _, command, client_name = call.data.split(":")
 
     if command == "get_qrcode":
         photo = put_bytes_to_file(get_config_qrcode(client_name))
@@ -140,10 +135,10 @@ async def get_client_3(call: CallbackQuery, state: FSMContext):
         )
         await call.answer()
         await call.message.edit_text(Text.CLIENT_DELETE_CONFIRM.format(client_name=client_name), reply_markup=conf_del)
-        await GetClient.next()
+        await GetClient.name.set()
 
 
-@dp.callback_query_handler(state=GetClient.choice)
+@dp.callback_query_handler(state=GetClient.name)
 async def get_client_4(call: CallbackQuery, state: FSMContext):
     _, client_name = call.data.split(":")
     delete_client(client_name)
