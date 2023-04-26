@@ -2,8 +2,8 @@ all: init
 
 init:
 	mkdir -p $(HOME)/.local/bin
-	chmod +x $(PWD)/wg_manager.sh
-	ln -s $(PWD)/wg_manager.sh $(HOME)/.local/bin/wg-manager
+	chmod +x $(PWD)/wg-manager.sh
+	ln -s $(PWD)/wg-manager.sh $(HOME)/.local/bin/wg-manager
 
 tg:
 	python3 -m virtualenv venv
